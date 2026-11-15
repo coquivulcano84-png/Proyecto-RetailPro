@@ -1,123 +1,50 @@
+# 🛒 Proyecto RetailPro — Data Analytics
 ## 🚀 Descripción del Proyecto
-
-**RetailPro** surge de la necesidad de unificar y analizar transacciones de venta, inventario, clientes y sucursales en una cadena de retail. El objetivo principal es transformar datos transaccionales crudos en métricas accionables para responder preguntas clave del negocio:
-* ¿Cuáles son los productos y categorías con mayor margen de contribución?
-* ¿Cómo se comportan los ingresos mensuales por región y sucursal?
-* ¿Quiénes conforman el top de clientes recurrentes (programa de fidelización)?
-
----
-
+RetailPro es un proyecto de análisis de datos desarrollado sobre una base transaccional de retail y e-commerce. El objetivo principal es transformar registros transaccionales en métricas clave para la toma de decisiones comerciales:
+* Facturación total mensual y ticket promedio.
+* Ranking y concentración de ingresos por producto estrella.
+* Identificación de clientes y productos sin transacciones asociadas.
+* Consolidado de ventas por canal (Online vs. Presencial).
 ## 🛢️ Modelo Relacional
-
-El diseño de la base de datos cumple con la **3era Forma Normal (3FN)** para garantizar la integridad referencial y optimizar el rendimiento de las consultas analíticas.
-
-```text
-[clientes] (1) ------< (N) [ventas] >------ (1) [sucursales]
-                              |
-                             (N)
-                              |
-                    [detalle_ventas] (N) >------ (1) [productos]
-```
-
-* **`clientes`**: Información demográfica y de contacto del comprador.
-* **`sucursales`**: Ubicación, gerente a cargo y tipo de tienda.
-* **`productos`**: Catálogo, SKU, categoría y costo unitario.
-* **`ventas`**: Cabecera de la transacción (fecha, ID cliente, ID sucursal, método de pago).
-* **`detalle_ventas`**: Tabla de relación con cantidades, precios de venta unitarios y descuentos aplicados.
-
----
-
-## 🛠️ Tecnologías y Herramientas Utilizadas
-
-| Categoría | Herramienta / Tecnología | Propósito |
-| :--- | :--- | :--- |
-| **Base de Datos** | **PostgreSQL 18** | Motor de base de datos relacional y ejecución de consultas SQL. |
-| **Lenguaje Query** | **SQL (ANSI / PL/pgSQL)** | DDL, DML, CTEs, Joins complejos y funciones de ventana (`ROW_NUMBER`, `RANK`). |
-| **Análisis / EDA** | **Python 3.11** | Extracción, limpieza y validación de datos. |
-| **Visualización** | **Pandas / Matplotlib / Seaborn** | Generación de gráficos exploratorios preliminares. |
-| **Control de Versiones** | **Git / GitHub** | Versionado del código y documentación. |
-
----
-
+El esquema relacional implementado en **PostgreSQL 18** consta de 4 tablas vinculadas mediante restricciones de clave primaria y foránea:
+* **categorias:** Identificador, nombre de la categoría y descripción.
+* **clientes:** Datos demográficos, correo, ciudad y fecha de registro.
+* **productos:** Catálogo de artículos, categoría, precio unitario, stock y estado activo.
+* **ventas:** Registro transaccional con cliente, producto, cantidad, fecha y precio unitario histórico.
+## 🛠️ Tecnologías Utilizadas
+* **Motor de Base de Datos:** PostgreSQL 18
+* **Entorno de Gestión:** pgAdmin 4
+* **Lenguaje:** SQL (DDL, DML, Joins, Agrupaciones y Funciones de agregación)
 ## 📁 Estructura del Repositorio
-
-```text
-Proyecto-RetailPro/
-│
-├── data/                       # Datasets crudos y procesados (.csv / .sql dumps)
-│   ├── raw/
-│   └── processed/
-│
-├── sql/                        # Scripts SQL ordenados por fase
-│   ├── 01_schema_ddl.sql       # Creación de tablas, PK, FK y restricciones
-│   ├── 02_seed_data.sql        # Inserción de datos de prueba / ETL inicial
-│   └── 03_business_kpis.sql    # Consultas analíticas, JOINs y KPIs
-│
-├── notebooks/                  # Análisis exploratorio en Jupyter
-│   └── 01_eda_retailpro.ipynb  # Visualizaciones preliminares y estadísticas
-│
-├── img/                        # Gráficos y diagramas exportados
-│   └── ERD_RetailPro.png
-│
-├── .gitignore
-└── README.md                   # Documentación principal del proyecto
-```
-
----
-
-## ⚡ Instrucciones Paso a Paso para Ejecutar los Scripts
-
-Sigue estos pasos en tu terminal o cliente SQL favorito (**pgAdmin**, **DBeaver**, **psql**):
-
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com
-cd Proyecto-RetailPro
-```
-
-### 2. Crear la base de datos en PostgreSQL 18
-Abre tu consola de PostgreSQL o cliente y ejecuta:
-```sql
-CREATE DATABASE retailpro_db\(; \c\) retailpro_db;
-```
-
-### 3. Ejecutar el DDL (Estructura de tablas)
-```bash
-psql -U postgres -d retailpro_db -f sql/01_schema_ddl.sql
-```
-
-### 4. Cargar los datos (Seed / ETL)
-```bash
-psql -U postgres -d retailpro_db -f sql/02_seed_data.sql
-```
-
-### 5. Ejecutar las consultas de negocio y KPIs
-```bash
-psql -U postgres -d retailpro_db -f sql/03_business_kpis.sql
-```
-
----
-
-## 📊 Consultas y KPIs Destacados
-
-Ejemplo de consulta extraída de `sql/03_business_kpis.sql` para calcular el **Top 3 de categorías por ingresos**:
-
+* `sql/` : Scripts DDL (creación de tablas), DML (inserción de datos) y consultas analíticas de negocio.
+* `README.md` : Documentación técnica del proyecto.
+## ⚡ Instrucciones de Ejecución (pgAdmin 4)
+1. Abrir **pgAdmin 4** y conectarse al servidor de **PostgreSQL 18**.
+2. Crear una nueva base de datos llamada `retailpro_db`.
+3. Abrir la herramienta de consultas (**Query Tool**).
+4. Ejecutar las secciones en el siguiente orden:
+   * **Sección 1 y 2 (DDL):** `DROP TABLE` y `CREATE TABLE` para construir la estructura relacional.
+   * **Sección 3 (DML):** `INSERT INTO` para cargar los datos de categorías, clientes, productos y ventas.
+   * **Sección 4 (Validación y Consultas):** Ejecutar las consultas de negocio (Pre-entrega 4 y Pre-entrega 5).
+## 📊 Consulta Destacada: Vista Base (INNER JOIN)
 ```sql
 SELECT 
-    p.categoria,
-    COUNT(dv.venta_id) AS total_unidades_vendidas,
-    SUM(dv.cantidad * dv.precio_unitario) AS ingresos_totales
-FROM productos p
-INNER JOIN detalle_ventas dv ON p.producto_id = dv.producto_id
-GROUP BY p.categoria
-ORDER BY ingresos_totales DESC
-LIMIT 3;
-```
+    v.fecha_venta,
+    c.id_cliente,
+    c.nombre AS nombre_cliente,
+    c.ciudad,
+    p.id_producto,
+    p.nombre_producto,
+    p.id_categoria,
+    v.cantidad,
+    v.precio_unitario,
+    (v.cantidad * v.precio_unitario) AS total_venta
+FROM ventas AS v
+INNER JOIN clientes AS c ON v.id_cliente = c.id_cliente
+INNER JOIN productos AS p ON v.id_producto = p.id_producto
+ORDER BY v.fecha_venta ASC;
 
----
 
-## 👤 Autor y Contacto
-
-* **Analista / Desarrollador:** [Alicia Vulcano)
-* **Rol:** Data Analyst / SQL Developer
-* **GitHub:** [@coquivulcano84-png](https://github.com)
+Autor y Contacto
+•	Analista: [Alicia Carmen del Milagro Vulcano)
+•	GitHub: @coquivulcano84-png
